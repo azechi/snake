@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+</style>
+  </head>
+
+  <script>
+
+    let tileSize;
+    let gridSize;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      let canvas = document.getElementById("canvas");
+
+      const w = document.documentElement.clientWidth;
+      gridSize = 25;
+      tileSize = w / gridSize;
+      
+      canvas.width = tileSize * gridSize;
+      canvas.height = tileSize * gridSize;
+    
+    });
+
+    window.onload = function() {
+      let canvas = document.getElementById("canvas");
+      let ctx = canvas.getContext("2d");
+
+      let nextX = 0;
+      let nextY = 0;
+
+      const t = i => {
+        
+        const a = [0, 1, 0, -1]
+        return () => {
+          i = (i + 1) % 4;
+          return a[i]
+        };
+      };
+
+      let x = t(2);
+      let y = t(1);
+
+      canvas.addEventListener("click", e => {
+        
+        nextX = x();
+        nextY = y();
+      
+      });
+
+      const defaultTailSize = 3;
+
+      let snakeX = 10;
+      let snakeY = 10;
+      let tailSize = defaultTailSize;
+      let snakeTrail = [];
+
+      let appleX = 15;
+      let appleY = 15;
+
+      setInterval(()=>{
+        snakeX += nextX;
+        snakeY += nextY;
+
+        if (snakeX < 0) {
+          snakeX = gridSize -1;
+        }
+
+        if (snakeX > gridSize -1) {
+          snakeX = 0;
+        }
+
+        if (snakeY < 0) {
+          snakeY = gridSize -1;
+        }
+
+        if (snakeY > gridSize -1) {
+          snakeY = 0;
+        }
+
+        if (snakeX == appleX && snakeY == appleY) {
+          tailSize++;
+          appleX = Math.floor(Math.random() * gridSize);
+          appleY = Math.floor(Math.random() * gridSize);
+        }
+
+        ctx.fillStyle = "#1C1D24";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#FF0000";
+        for (var i = 0; i < snakeTrail.length; i++) {
+          ctx.fillRect(
+            snakeTrail[i].x * tileSize,
+            snakeTrail[i].y * tileSize,
+            tileSize,
+            tileSize
+          );
+
+          if (snakeTrail[i].x == snakeX && snakeTrail[i].y == snakeY) {
+            tailSize = defaultTailSize;
+          }
+        }
+
+        ctx.fillStyle = "#00FF00";
+        ctx.fillRect(appleX * tileSize, appleY * tileSize, tileSize, tileSize);
+
+        snakeTrail.push({x: snakeX, y: snakeY});
+        while(snakeTrail.length > tailSize){
+          snakeTrail.shift();
+        }
+        
+      }, 1000 / 8);
+  
+    };
+
+
+
+  </script>
+
+
+  <body style="touch-action:none;">
+    <canvas id="canvas"></canvas>
+  </body>
+</html>
