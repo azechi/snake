@@ -9,6 +9,9 @@
 body {
   margin: 0;
   padding: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 </style>
@@ -16,14 +19,14 @@ body {
 
   <script>
 
+    const gridSize = 25;
     let tileSize;
-    let gridSize;
 
     document.addEventListener("DOMContentLoaded", () => {
       let canvas = document.getElementById("canvas");
 
-      const w = document.documentElement.clientWidth;
-      gridSize = 25;
+      const w = Math.min(document.documentElement.clientWidth, document.documentElement.clientHeight);
+      
       tileSize = w / gridSize;
       
       canvas.width = tileSize * gridSize;
@@ -50,10 +53,12 @@ body {
       let x = t(2);
       let y = t(1);
 
-      canvas.addEventListener("pointerdown", e => {
+      document.addEventListener("pointerdown", e => {
         
         nextX = x();
         nextY = y();
+
+        e.preventDefault();
       
       });
 
@@ -127,7 +132,7 @@ body {
   </script>
 
 
-  <body style="touch-action:none;">
+  <body>
     <canvas id="canvas"></canvas>
   </body>
 </html>
